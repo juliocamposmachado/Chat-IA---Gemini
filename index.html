@@ -3,7 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat IA - Gemini 2.0 Configurável</title>
+
+  <!--  Meta Descrição (Otimizada para SEO) -->
+  <meta name="description" content="Chat IA Gemini 2.0 configurável: Converse com inteligência artificial, salve seus chats e personalize o modelo Gemini. Experimente agora!" />
+
+  <!-- Meta Keywords (Palavras-chave relevantes para SEO) -->
+  <meta name="keywords" content="Chat IA, Gemini 2.0, Inteligência Artificial, Chatbot, Google AI, API Gemini, Conversas IA, Configuração Gemini, Chatbot configurável, IA em português" />
+
+  <!-- Meta Robots (Instruções para os crawlers dos mecanismos de busca) -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- Meta Author (Informações sobre o autor do site) -->
+  <meta name="author" content="[Seu Nome ou Nome da Empresa]" />
+
+  <!-- Título da Página (Otimizado para SEO) -->
+  <title>Chat IA Gemini 2.0: Converse e Configure sua IA Personalizada</title>
+
+  <!--  Link Canônico (Para evitar conteúdo duplicado, se aplicável)
+        Se você tem outras páginas com conteúdo similar, especifique a URL preferencial aqui. -->
+  <!-- <link rel="canonical" href="https://www.seusite.com/chat-ia-gemini" /> -->
+
+  <!-- Favicon (Ícone exibido na aba do navegador) -->
+  <!--  Substitua "caminho/para/seu/favicon.ico" pelo caminho real do seu arquivo favicon -->
+  <link rel="icon" href="caminho/para/seu/favicon.ico" type="image/x-icon">
+
+  <!-- Open Graph / Facebook (Metadados para compartilhamento em redes sociais) -->
+  <meta property="og:title" content="Chat IA Gemini 2.0: Converse e Configure sua IA Personalizada" />
+  <meta property="og:description" content="Chat IA Gemini 2.0 configurável: Converse com inteligência artificial, salve seus chats e personalize o modelo Gemini. Experimente agora!" />
+  <meta property="og:image" content="caminho/para/sua/imagem-de-compartilhamento.jpg" />  <!--  Substitua pelo caminho da imagem que você quer exibir ao compartilhar no Facebook -->
+  <meta property="og:url" content="https://www.seusite.com/chat-ia-gemini" />  <!-- Substitua pela URL do seu site -->
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card (Metadados para compartilhamento no Twitter) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chat IA Gemini 2.0: Converse e Configure sua IA Personalizada" />
+  <meta name="twitter:description" content="Chat IA Gemini 2.0 configurável: Converse com inteligência artificial, salve seus chats e personalize o modelo Gemini. Experimente agora!" />
+  <meta name="twitter:image" content="caminho/para/sua/imagem-de-compartilhamento.jpg" />  <!-- Substitua pelo caminho da imagem que você quer exibir ao compartilhar no Twitter -->
+
   <style>
     * { box-sizing: border-box; }
     body {
@@ -169,190 +205,190 @@
   </style>
 </head>
 <body>
-  <div id="sidebar">
-    <header>💬 Conversas</header>
-    <div id="conversations"></div>
-    <div id="new-chat">+ Nova Conversa</div>
+<div id="sidebar">
+  <header>💬 Conversas</header>
+  <div id="conversations"></div>
+  <div id="new-chat">+ Nova Conversa</div>
+</div>
+
+<div id="main">
+  <button id="toggle-btn">☰</button>
+  <button id="config-btn">⚙️</button>
+  <header>Chat IA - Gemini</header>
+
+  <div id="chat"></div>
+
+  <div id="input-area">
+    <input id="user-input" type="text" placeholder="Digite sua mensagem..." />
+    <button id="send-btn">Enviar</button>
   </div>
+</div>
 
-  <div id="main">
-    <button id="toggle-btn">☰</button>
-    <button id="config-btn">⚙️</button>
-    <header>Chat IA - Gemini</header>
+<!-- Modal Configuração -->
+<div id="config-modal">
+  <div id="config-box">
+    <h3>⚙️ Configurações</h3>
+    <label for="api-key">Chave da API Gemini:</label>
+    <input type="text" id="api-key" placeholder="Insira sua chave aqui..." />
 
-    <div id="chat"></div>
+    <label for="model">Modelo Gemini:</label>
+    <input type="text" id="model" placeholder="ex: gemini-2.0-flash" />
 
-    <div id="input-area">
-      <input id="user-input" type="text" placeholder="Digite sua mensagem..." />
-      <button id="send-btn">Enviar</button>
-    </div>
+    <button id="save-config">Salvar Configurações</button>
+    <button id="clear-history">🗑️ Apagar todas conversas</button>
+    <button id="close-config">Fechar</button>
   </div>
+</div>
 
-  <!-- Modal Configuração -->
-  <div id="config-modal">
-    <div id="config-box">
-      <h3>⚙️ Configurações</h3>
-      <label for="api-key">Chave da API Gemini:</label>
-      <input type="text" id="api-key" placeholder="Insira sua chave aqui..." />
+<script>
+  // --- Estado e inicialização ---
+  let config = JSON.parse(localStorage.getItem("config")) || {
+    apiKey: "",
+    model: "gemini-2.0-flash"
+  };
+  let conversations = JSON.parse(localStorage.getItem("conversations")) || {};
+  let currentConvId = localStorage.getItem("currentConvId") || createNewConversation();
 
-      <label for="model">Modelo Gemini:</label>
-      <input type="text" id="model" placeholder="ex: gemini-2.0-flash" />
+  // --- Elementos DOM ---
+  const chatBox = document.getElementById("chat");
+  const input = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("toggle-btn");
+  const convList = document.getElementById("conversations");
+  const newChatBtn = document.getElementById("new-chat");
+  const configBtn = document.getElementById("config-btn");
+  const configModal = document.getElementById("config-modal");
+  const apiInput = document.getElementById("api-key");
+  const modelInput = document.getElementById("model");
+  const saveConfigBtn = document.getElementById("save-config");
+  const closeConfigBtn = document.getElementById("close-config");
+  const clearHistoryBtn = document.getElementById("clear-history");
 
-      <button id="save-config">Salvar Configurações</button>
-      <button id="clear-history">🗑️ Apagar todas conversas</button>
-      <button id="close-config">Fechar</button>
-    </div>
-  </div>
-
-  <script>
-    // --- Estado e inicialização ---
-    let config = JSON.parse(localStorage.getItem("config")) || {
-      apiKey: "",
-      model: "gemini-2.0-flash"
-    };
-    let conversations = JSON.parse(localStorage.getItem("conversations")) || {};
-    let currentConvId = localStorage.getItem("currentConvId") || createNewConversation();
-
-    // --- Elementos DOM ---
-    const chatBox = document.getElementById("chat");
-    const input = document.getElementById("user-input");
-    const sendBtn = document.getElementById("send-btn");
-    const sidebar = document.getElementById("sidebar");
-    const toggleBtn = document.getElementById("toggle-btn");
-    const convList = document.getElementById("conversations");
-    const newChatBtn = document.getElementById("new-chat");
-    const configBtn = document.getElementById("config-btn");
-    const configModal = document.getElementById("config-modal");
-    const apiInput = document.getElementById("api-key");
-    const modelInput = document.getElementById("model");
-    const saveConfigBtn = document.getElementById("save-config");
-    const closeConfigBtn = document.getElementById("close-config");
-    const clearHistoryBtn = document.getElementById("clear-history");
-
-    // --- Conversas ---
-    function createNewConversation() {
-      const id = "conv_" + Date.now();
-      conversations[id] = [];
-      saveConversations();
-      localStorage.setItem("currentConvId", id);
-      renderConversationList();
-      loadConversation(id);
-      return id;
-    }
-
-    function renderConversationList() {
-      convList.innerHTML = "";
-      Object.keys(conversations)
-        .sort((a, b) => b.localeCompare(a))
-        .forEach((id) => {
-          const preview = conversations[id][0]?.text?.substring(0, 25) || "Nova conversa";
-          const div = document.createElement("div");
-          div.className = "conv-item";
-          div.textContent = preview;
-          div.onclick = () => loadConversation(id);
-          convList.appendChild(div);
-        });
-    }
-
-    function loadConversation(id) {
-      currentConvId = id;
-      localStorage.setItem("currentConvId", id);
-      chatBox.innerHTML = "";
-      conversations[id].forEach((msg) => addMessage(msg.text, msg.role));
-    }
-
-    function addMessage(text, role) {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `msg ${role}`;
-      msgDiv.innerText = text;
-      chatBox.appendChild(msgDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function saveConversations() {
-      localStorage.setItem("conversations", JSON.stringify(conversations));
-    }
-
-    // --- Envio de mensagem ---
-    async function sendMessage() {
-      const userText = input.value.trim();
-      if (!userText || !config.apiKey) {
-        alert("Por favor, insira uma chave de API válida nas configurações.");
-        return;
-      }
-
-      addMessage(userText, "user");
-      conversations[currentConvId].push({ role: "user", text: userText });
-      saveConversations();
-      input.value = "";
-      addMessage("Digitando...", "ai");
-
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${config.apiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: userText }] }],
-            }),
-          }
-        );
-
-        const data = await response.json();
-        const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Erro ao gerar resposta.";
-
-        chatBox.removeChild(chatBox.lastChild);
-        addMessage(aiText, "ai");
-        conversations[currentConvId].push({ role: "ai", text: aiText });
-        saveConversations();
-        renderConversationList();
-      } catch (err) {
-        chatBox.removeChild(chatBox.lastChild);
-        addMessage("❌ Erro ao conectar à API.", "ai");
-      }
-    }
-
-    // --- Configurações ---
-    function openConfig() {
-      apiInput.value = config.apiKey;
-      modelInput.value = config.model;
-      configModal.style.display = "flex";
-    }
-
-    function closeConfig() {
-      configModal.style.display = "none";
-    }
-
-    function saveConfig() {
-      config.apiKey = apiInput.value.trim();
-      config.model = modelInput.value.trim() || "gemini-2.0-flash";
-      localStorage.setItem("config", JSON.stringify(config));
-      alert("✅ Configurações salvas com sucesso!");
-      closeConfig();
-    }
-
-    function clearAllHistory() {
-      if (confirm("Apagar todas as conversas?")) {
-        conversations = {};
-        saveConversations();
-        createNewConversation();
-      }
-    }
-
-    // --- Eventos ---
-    sendBtn.addEventListener("click", sendMessage);
-    input.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
-    toggleBtn.addEventListener("click", () => sidebar.classList.toggle("collapsed"));
-    newChatBtn.addEventListener("click", createNewConversation);
-    configBtn.addEventListener("click", openConfig);
-    closeConfigBtn.addEventListener("click", closeConfig);
-    saveConfigBtn.addEventListener("click", saveConfig);
-    clearHistoryBtn.addEventListener("click", clearAllHistory);
-
-    // --- Inicialização ---
+  // --- Conversas ---
+  function createNewConversation() {
+    const id = "conv_" + Date.now();
+    conversations[id] = [];
+    saveConversations();
+    localStorage.setItem("currentConvId", id);
     renderConversationList();
-    loadConversation(currentConvId);
-  </script>
+    loadConversation(id);
+    return id;
+  }
+
+  function renderConversationList() {
+    convList.innerHTML = "";
+    Object.keys(conversations)
+      .sort((a, b) => b.localeCompare(a))
+      .forEach((id) => {
+        const preview = conversations[id][0]?.text?.substring(0, 25) || "Nova conversa";
+        const div = document.createElement("div");
+        div.className = "conv-item";
+        div.textContent = preview;
+        div.onclick = () => loadConversation(id);
+        convList.appendChild(div);
+      });
+  }
+
+  function loadConversation(id) {
+    currentConvId = id;
+    localStorage.setItem("currentConvId", id);
+    chatBox.innerHTML = "";
+    conversations[id].forEach((msg) => addMessage(msg.text, msg.role));
+  }
+
+  function addMessage(text, role) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `msg ${role}`;
+    msgDiv.innerText = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function saveConversations() {
+    localStorage.setItem("conversations", JSON.stringify(conversations));
+  }
+
+  // --- Envio de mensagem ---
+  async function sendMessage() {
+    const userText = input.value.trim();
+    if (!userText || !config.apiKey) {
+      alert("Por favor, insira uma chave de API válida nas configurações.");
+      return;
+    }
+
+    addMessage(userText, "user");
+    conversations[currentConvId].push({ role: "user", text: userText });
+    saveConversations();
+    input.value = "";
+    addMessage("Digitando...", "ai");
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${config.apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: userText }] }],
+          }),
+        }
+      );
+
+      const data = await response.json();
+      const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Erro ao gerar resposta.";
+
+      chatBox.removeChild(chatBox.lastChild);
+      addMessage(aiText, "ai");
+      conversations[currentConvId].push({ role: "ai", text: aiText });
+      saveConversations();
+      renderConversationList();
+    } catch (err) {
+      chatBox.removeChild(chatBox.lastChild);
+      addMessage("❌ Erro ao conectar à API.", "ai");
+    }
+  }
+
+  // --- Configurações ---
+  function openConfig() {
+    apiInput.value = config.apiKey;
+    modelInput.value = config.model;
+    configModal.style.display = "flex";
+  }
+
+  function closeConfig() {
+    configModal.style.display = "none";
+  }
+
+  function saveConfig() {
+    config.apiKey = apiInput.value.trim();
+    config.model = modelInput.value.trim() || "gemini-2.0-flash";
+    localStorage.setItem("config", JSON.stringify(config));
+    alert("✅ Configurações salvas com sucesso!");
+    closeConfig();
+  }
+
+  function clearAllHistory() {
+    if (confirm("Apagar todas as conversas?")) {
+      conversations = {};
+      saveConversations();
+      createNewConversation();
+    }
+  }
+
+  // --- Eventos ---
+  sendBtn.addEventListener("click", sendMessage);
+  input.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+  toggleBtn.addEventListener("click", () => sidebar.classList.toggle("collapsed"));
+  newChatBtn.addEventListener("click", createNewConversation);
+  configBtn.addEventListener("click", openConfig);
+  closeConfigBtn.addEventListener("click", closeConfig);
+  saveConfigBtn.addEventListener("click", saveConfig);
+  clearHistoryBtn.addEventListener("click", clearAllHistory);
+
+  // --- Inicialização ---
+  renderConversationList();
+  loadConversation(currentConvId);
+</script>
 </body>
 </html>
