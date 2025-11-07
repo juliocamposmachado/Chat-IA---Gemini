@@ -263,7 +263,7 @@
       border-top: 1px solid rgba(51, 65, 85, 0.5);
     }
 
-    #open-terminal, #start-server-btn, #download-server-btn {
+    #open-terminal, #start-server-btn, #download-server-btn, #download-installer-btn {
       padding: 12px 20px;
       border-radius: 10px;
       border: none;
@@ -289,6 +289,19 @@
       color: white;
     }
 
+    #download-installer-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
     #open-terminal:hover {
       background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
       transform: translateY(-2px);
@@ -301,6 +314,11 @@
 
     #download-server-btn:hover {
       background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      transform: translateY(-2px);
+    }
+
+    #download-installer-btn:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       transform: translateY(-2px);
     }
 
@@ -521,7 +539,8 @@
     <div id="terminal-buttons-container">
       <button id="open-terminal">🖥️ Terminal PowerShell</button>
       <button id="start-server-btn">🚀 Iniciar Servidor</button>
-      <button id="download-server-btn">⬇️ Baixar Server.js</button>
+      <button id="download-server-btn">⬇️ Baixar Server.cjs</button>
+      <button id="download-installer-btn">📦 Baixar Instalador do Servidor</button>
     </div>
 
     <div id="terminal-panel">
@@ -591,6 +610,7 @@
     const terminalSendBtn = document.getElementById('terminal-send');
     const startServerBtn = document.getElementById('start-server-btn');
     const downloadServerBtn = document.getElementById('download-server-btn');
+    const downloadInstallerBtn = document.getElementById('download-installer-btn');
 
     // Server configuration
     const SERVER_URL = 'http://127.0.0.1:3001/exec';
@@ -939,6 +959,28 @@
         addTerminalMessage('server.js baixado com sucesso!', 'info');
       } catch (error) {
         addTerminalMessage(`Erro ao baixar server.js: ${error.message}`, 'error');
+      }
+    });
+
+    downloadInstallerBtn.addEventListener('click', async () => {
+      const installerUrl = 'https://raw.githubusercontent.com/juliocamposmachado/Chat-IA---Gemini/master/install_and_start_server.bat';
+      try {
+        const response = await fetch(installerUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch installer.bat: ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'install_and_start_server.bat';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        addTerminalMessage('Instalador do servidor baixado com sucesso! Execute-o como Administrador.', 'info');
+      } catch (error) {
+        addTerminalMessage(`Erro ao baixar o instalador do servidor: ${error.message}`, 'error');
       }
     });
 
