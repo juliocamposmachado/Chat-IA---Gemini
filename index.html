@@ -253,6 +253,149 @@
     }
     #send-btn:active { transform: translateY(0); }
 
+    /* Terminal Styles */
+    #terminal-buttons-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(30, 41, 59, 0.8);
+      border-top: 1px solid rgba(51, 65, 85, 0.5);
+    }
+
+    #open-terminal, #start-server-btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    #open-terminal {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+    }
+
+    #start-server-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    #open-terminal:hover {
+      background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+      transform: translateY(-2px);
+    }
+
+    #start-server-btn:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-2px);
+    }
+
+    #terminal-panel {
+      width: 95%;
+      height: 350px;
+      background: #0f0f0f;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      margin: 0 auto 20px;
+      border: 2px solid rgba(124, 58, 237, 0.8);
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    .terminal-header-bar {
+      background: #2d1b69;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(124, 58, 237, 0.5);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .close-terminal-btn {
+      background: #ef4444;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .close-terminal-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    #terminal-output {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      color: #00ff00;
+      font-size: 14px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    #terminal-output::-webkit-scrollbar { width: 8px; }
+    #terminal-output::-webkit-scrollbar-track { background: #1a1a1a; }
+    #terminal-output::-webkit-scrollbar-thumb {
+      background: #7c3aed;
+      border-radius: 4px;
+    }
+
+    .terminal-input-area {
+      display: flex;
+      padding: 12px 16px;
+      background: #1a1a1a;
+      border-top: 1px solid rgba(124, 58, 237, 0.3);
+      gap: 10px;
+    }
+
+    #terminal-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #000;
+      border: 1px solid #7c3aed;
+      border-radius: 6px;
+      color: #00ff00;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #terminal-input:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+    }
+
+    #terminal-send {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+
+    #terminal-send:hover {
+      background: #6d28d9;
+      transform: scale(1.05);
+    }
+
+    /* Config Modal Styles */
     #config-modal {
       position: fixed;
       top: 0; left: 0;
@@ -299,7 +442,7 @@
       overflow-y: auto;
       margin-top: 4px;
     }
-    #config-box input {
+    #config-box input, #config-box textarea {
       padding: 12px;
       border-radius: 8px;
       border: 2px solid rgba(71, 85, 105, 0.5);
@@ -309,8 +452,9 @@
       color: #0f172a;
       font-size: 14px;
       transition: all 0.2s ease;
+      font-family: inherit;
     }
-    #config-box input:focus {
+    #config-box input:focus, #config-box textarea:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
@@ -321,6 +465,9 @@
       border-radius: 8px;
       font-size: 15px;
       transition: all 0.2s ease;
+      border: none;
+      color: white;
+      cursor: pointer;
     }
     #config-box button:hover {
       transform: translateY(-2px);
@@ -337,63 +484,8 @@
       #sidebar { width: 260px; }
       .msg { max-width: 90%; }
       #input-area { padding: 12px; }
-    }
-
-    /* New styles for interactive terminal */
-    #open-terminal {
-      /* position: fixed; */
-      /* right: 20px; */
-      /* bottom: 20px; */
-      /* z-index: 9999; */
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      margin-top: 10px; /* Add some space below chat input */
-    }
-    #start-server-btn {
-      /* position: fixed; */
-      /* right: 180px; */
-      /* bottom: 20px; */
-      /* z-index: 9999; */
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: #10b981;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      margin-left: 10px; /* Space between buttons */
-      margin-top: 10px; /* Align with terminal button */
-    }
-
-    #terminal-panel {
-      /* position: fixed; */
-      /* right: 20px; */
-      /* bottom: 80px; */
-      /* z-index: 9999; */
-      width: 520px;
-      max-width: 95%;
-      height: 320px;
-      background: #0b0b0b;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-      overflow: hidden;
-      display: none; /* Keep hidden by default */
-      /* z-index: 9999; */
-      border: 2px solid rgba(37,99,235,0.8);
-      margin: 10px auto; /* Center horizontally and add space */
-      flex-direction: column; /* Ensure content stacks vertically when visible */
-    }
-    /* Add a container for the buttons to manage their layout */
-    #terminal-buttons-container {
-      display: flex;
-      justify-content: center; /* Center buttons */
-      width: 100%;
-      max-width: 900px; /* Align with chat input area */
-      margin: 0 auto; /* Center horizontally */
-      padding: 10px 0;
+      #terminal-panel { height: 300px; }
+      #terminal-buttons-container { flex-direction: column; }
     }
   </style>
 </head>
@@ -417,20 +509,18 @@
     </div>
 
     <div id="terminal-buttons-container">
-      <button id="open-terminal">Terminal PowerShell</button>
-      <button id="start-server-btn">Iniciar Servidor</button>
+      <button id="open-terminal">🖥️ Terminal PowerShell</button>
+      <button id="start-server-btn">🚀 Iniciar Servidor</button>
     </div>
 
     <div id="terminal-panel">
       <div class="terminal-header-bar">
-        <span>Windows PowerShell — Conexão Local</span>
+        <span>Windows PowerShell — Terminal Integrado</span>
         <button id="close-terminal" class="close-terminal-btn">✕</button>
       </div>
-
       <div id="terminal-output"></div>
-
       <div class="terminal-input-area">
-        <input id="terminal-input" placeholder='ex: whoami / date / dir' />
+        <input id="terminal-input" placeholder='Digite um comando (ex: dir, ipconfig, ping google.com)...' />
         <button id="terminal-send">Executar</button>
       </div>
     </div>
@@ -446,7 +536,7 @@
       <input type="text" id="model" placeholder="ex: gemini-2.0-flash-exp" />
 
       <label for="persona">Persona da IA:</label>
-      <textarea id="persona" placeholder="Defina a persona da IA aqui (ex: você é um especialista em IA e programação full stack)..." style="padding: 12px; border-radius: 8px; border: 2px solid rgba(71, 85, 105, 0.5); outline: none; width: 100%; background: rgba(248, 250, 252, 0.95); color: #0f172a; font-size: 14px; resize: vertical; min-height: 60px; font-family: inherit;"></textarea>
+      <textarea id="persona" placeholder="Defina a persona da IA aqui (ex: você é um especialista em IA e programação full stack)..." style="min-height: 60px; resize: vertical;"></textarea>
       <div id="persona-preview"></div>
 
       <button id="save-config">Salvar Configurações</button>
@@ -480,6 +570,19 @@
     const saveConfigBtn = document.getElementById("save-config");
     const closeConfigBtn = document.getElementById("close-config");
     const clearHistoryBtn = document.getElementById("clear-history");
+
+    // Terminal elements
+    const openTerminalBtn = document.getElementById('open-terminal');
+    const closeTerminalBtn = document.getElementById('close-terminal');
+    const terminalPanel = document.getElementById('terminal-panel');
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalSendBtn = document.getElementById('terminal-send');
+    const startServerBtn = document.getElementById('start-server-btn');
+
+    // Server configuration
+    const SERVER_URL = 'http://localhost:3000/exec';
+    const TOKEN = 'terminal-secret-token-2024';
 
     function createNewConversation() {
       const id = "conv_" + Date.now();
@@ -669,14 +772,109 @@
       }
     }
 
+    // Terminal Functions
     function toggleTerminal() {
       const isOpen = terminalPanel.style.display === "flex";
       terminalPanel.style.display = isOpen ? "none" : "flex";
       if (!isOpen) {
         terminalInput.focus();
+        addTerminalMessage("Terminal PowerShell conectado. Digite 'help' para ver comandos disponíveis.");
       }
     }
 
+    function addTerminalMessage(message, type = "info") {
+      const timestamp = new Date().toLocaleTimeString();
+      let color = "#00ff00"; // verde para info
+      
+      if (type === "error") color = "#ff4444";
+      if (type === "warning") color = "#ffaa00";
+      if (type === "command") color = "#88b0ff";
+      
+      terminalOutput.innerHTML += `<span style="color:${color}">[${timestamp}] ${escapeHtml(message)}</span>\n`;
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    function displayServerStartInstructions() {
+      addTerminalMessage("=== INSTRUÇÕES PARA INICIAR SERVIDOR ===", "warning");
+      addTerminalMessage("1. Abra o PowerShell como Administrador");
+      addTerminalMessage("2. Execute: cd \"C:\\Gemini chat\"");
+      addTerminalMessage("3. Execute: node server.js");
+      addTerminalMessage("4. Aguarde a mensagem 'Servidor rodando na porta 3000'");
+      addTerminalMessage("5. O terminal abaixo funcionará automaticamente");
+    }
+
+    async function executeTerminalCommand() {
+      const command = terminalInput.value.trim();
+      if (!command) return;
+
+      // Comandos locais (não requerem servidor)
+      if (command === 'help') {
+        addTerminalMessage("=== COMANDOS DISPONÍVEIS ===", "warning");
+        addTerminalMessage("help - Mostra esta ajuda");
+        addTerminalMessage("clear - Limpa o terminal");
+        addTerminalMessage("server - Instruções para iniciar servidor");
+        addTerminalMessage("date - Mostra data e hora atual");
+        addTerminalMessage("Outros comandos serão enviados ao servidor local");
+        terminalInput.value = '';
+        return;
+      }
+
+      if (command === 'clear') {
+        terminalOutput.innerHTML = '';
+        terminalInput.value = '';
+        return;
+      }
+
+      if (command === 'server') {
+        displayServerStartInstructions();
+        terminalInput.value = '';
+        return;
+      }
+
+      if (command === 'date') {
+        addTerminalMessage(`Data/Hora atual: ${new Date().toLocaleString('pt-BR')}`);
+        terminalInput.value = '';
+        return;
+      }
+
+      // Mostrar comando no terminal
+      addTerminalMessage(`PS C:\\Gemini chat> ${command}`, "command");
+      terminalInput.value = '';
+
+      try {
+        const response = await fetch(SERVER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${TOKEN}`
+          },
+          body: JSON.stringify({ command: command })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Servidor respondeu com status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.stdout) {
+          addTerminalMessage(data.stdout);
+        }
+        if (data.stderr) {
+          addTerminalMessage(data.stderr, "error");
+        }
+        if (data.error) {
+          addTerminalMessage(`Erro: ${data.error}`, "error");
+        }
+
+      } catch (error) {
+        addTerminalMessage(`❌ Erro de conexão: ${error.message}`, "error");
+        addTerminalMessage("💡 Certifique-se de que o servidor está rodando em localhost:3000", "warning");
+        addTerminalMessage("Execute 'server' para ver instruções de como iniciar o servidor", "warning");
+      }
+    }
+
+    // Event Listeners
     chatSendBtn.addEventListener("click", sendMessage);
     chatInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
@@ -696,75 +894,25 @@
       if (e.target === configModal) closeConfig();
     });
 
-    // Interactive Terminal Logic
-    const openTerminalBtn = document.getElementById('open-terminal');
-    const closeTerminalBtn = document.getElementById('close-terminal');
-    const terminalPanel = document.getElementById('terminal-panel');
-    const terminalOutput = document.getElementById('terminal-output');
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalSendBtn = document.getElementById('terminal-send');
-    const startServerBtn = document.getElementById('start-server-btn');
-
+    // Terminal Event Listeners
     openTerminalBtn.addEventListener('click', toggleTerminal);
-
     closeTerminalBtn.addEventListener('click', () => {
       terminalPanel.style.display = 'none';
     });
-
-    function displayServerStartInstructions() {
-      terminalOutput.innerHTML += '<span style="color:#ffcc00;">Para iniciar o servidor, abra um terminal separado e execute:</span>\n';
-      terminalOutput.innerHTML += '<span style="color:#d1ffd6;">cd "c:\\Gemini chat"</span>\n';
-      terminalOutput.innerHTML += '<span style="color:#d1ffd6;">node server.js</span>\n';
-      terminalOutput.innerHTML += '<span style="color:#ffcc00;">Certifique-se de ter Node.js instalado.</span>\n';
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
-
     startServerBtn.addEventListener('click', displayServerStartInstructions);
-
-    // CONFIGURE AQUI (apenas localhost recomendado)
-    const SERVER_URL = 'http://127.0.0.1:3001/exec';
-    const TOKEN = 'um-token-muito-forte-que-so-eu-conheco'; // coloque mesmo token do servidor (ou obtenha dinamicamente)
-
-    async function executeTerminalCommand() {
-      const command = terminalInput.value.trim();
-      if (!command) return;
-
-      terminalOutput.innerHTML += `<span style="color:#88b0ff;">PS C:\Gemini chat></span> ${escapeHtml(command)}\n`;
-      terminalInput.value = '';
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-
-      try {
-        const res = await fetch(SERVER_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + TOKEN
-          },
-          body: JSON.stringify({ command: command })
-        });
-        const data = await res.json();
-        if (data.error) {
-          terminalOutput.innerHTML += `<span style="color:#ff6666;">[ERRO] ${escapeHtml(data.error)}</span>\n`;
-        }
-        if (data.stdout) terminalOutput.innerHTML += `<span style="color:#d1ffd6;">${escapeHtml(data.stdout)}</span>\n`;
-        if (data.stderr) terminalOutput.innerHTML += `<span style="color:#ff6666;">${escapeHtml(data.stderr)}</span>\n`;
-      } catch (err) {
-        terminalOutput.innerHTML += `<span style="color:#ff6666;">[FALHA] não foi possível conectar ao servidor local. Verifique se o servidor Node está rodando em ${SERVER_URL} e o token está correto.</span>\n`;
-      }
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
-
     terminalSendBtn.addEventListener('click', executeTerminalCommand);
     terminalInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter') {
         e.preventDefault();
         executeTerminalCommand();
       }
     });
 
-    terminalOutput.innerHTML += '<span style="color:#ffcc00;">Terminal local pronto. Use apenas se o servidor local estiver rodando e protegido.</span>\n';
-    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    // Initialize terminal
+    addTerminalMessage("Terminal PowerShell Integrado - Pronto para uso");
+    addTerminalMessage("Digite 'help' para ver comandos disponíveis");
 
+    // Initialize chat
     renderConversationList();
     loadConversation(currentConvId);
     autoResizeTextarea();
