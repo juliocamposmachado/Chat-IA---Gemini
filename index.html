@@ -616,5 +616,113 @@
     loadConversation(currentConvId);
     autoResizeTextarea();
   </script>
+
+<!-- Adicione logo antes do fechamento do </body> -->
+<div id="terminal-container">
+  <div id="terminal-header">Windows PowerShell © DGold Systems</div>
+  <div id="terminal" contenteditable="true" spellcheck="false">
+    PS C:\Gemini chat> _
+  </div>
+</div>
+
+<style>
+  #terminal-container {
+    background: #0c0c0c;
+    border-top: 2px solid #2563eb;
+    color: #00ff95;
+    font-family: "Consolas", "Courier New", monospace;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+  }
+
+  #terminal-header {
+    background: linear-gradient(90deg, #1e40af, #2563eb);
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  #terminal {
+    background: #0c0c0c;
+    height: 240px;
+    overflow-y: auto;
+    padding: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+    outline: none;
+    white-space: pre-wrap;
+  }
+
+  #terminal::-webkit-scrollbar {
+    width: 8px;
+  }
+  #terminal::-webkit-scrollbar-thumb {
+    background: #2563eb;
+    border-radius: 4px;
+  }
+  #terminal::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+</style>
+
+<script>
+  const terminal = document.getElementById("terminal");
+
+  terminal.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const lines = terminal.innerText.split("\n");
+      const lastLine = lines[lines.length - 1].trim();
+      const command = lastLine.replace(/^PS C:\\Gemini chat>\s?/, "");
+
+      let output = "";
+      if (command.toLowerCase() === "help") {
+        output = "Comandos disponíveis: help, cls, whoami, date, systeminfo, exit";
+      } else if (command.toLowerCase() === "cls") {
+        terminal.innerText = "PS C:\\Gemini chat> ";
+        return;
+      } else if (command.toLowerCase() === "whoami") {
+        output = "DGold\\JulioCamposMachado";
+      } else if (command.toLowerCase() === "date") {
+        output = new Date().toString();
+      } else if (command.toLowerCase() === "systeminfo") {
+        output =
+          "Sistema: DGold Systems\nVersão: Gemini Chat 2.0\nUsuário: Julio Campos Machado\nAI: Gemini API Key local";
+      } else if (command.toLowerCase() === "exit") {
+        output = "Saindo do terminal...";
+        setTimeout(() => {
+          terminal.innerText = "PS C:\\Gemini chat> ";
+        }, 1000);
+      } else if (command.trim() === "") {
+        output = "";
+      } else {
+        output = `'${command}' não é reconhecido como um comando interno ou externo.`;
+      }
+
+      terminal.innerText += "\n" + output + "\nPS C:\\Gemini chat> ";
+      setCaretToEnd(terminal);
+    }
+  });
+
+  function setCaretToEnd(el) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    el.scrollTop = el.scrollHeight;
+  }
+</script>
+
+
+
+
 </body>
 </html>
