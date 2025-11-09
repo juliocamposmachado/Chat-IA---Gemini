@@ -1,4 +1,4 @@
-// server.js  — RODAR LOCALMENTE APENAS
+// server.js — RODAR LOCALMENTE APENAS
 // Requisitos: node >= 16
 const express = require('express');
 const helmet = require('helmet');
@@ -7,26 +7,32 @@ const fetch = require('node-fetch');
 const { exec, spawn } = require('child_process');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 
 const app = express();
 app.use(helmet());
 app.use(bodyParser.json({ limit: '200kb' }));
 
 const PORT = process.env.PORT || 3001;
-const BIND_ADDR = '127.0.0.1';
+const BIND_ADDR = 'https://85cf818df1d7.ngrok-free.app -> http://localhost:3001';
 const SECRET = process.env.TERMINAL_TOKEN || 'um-token-muito-forte-que-so-eu-conheco';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
-let currentWorkingDir = process.cwd();
+// 🔧 Caminho inicial fixo (modifique conforme desejar)
+const defaultDir = "C:\\automacao_live\\scripts"; 
+
+// Verifica se o diretório existe; se não, usa o diretório atual
+let currentWorkingDir = fs.existsSync(defaultDir) ? defaultDir : process.cwd();
 
 console.log('Terminal PowerShell Integrado - Servidor iniciado');
-console.log('Diretorio inicial:', currentWorkingDir);
+console.log('Diretório inicial:', currentWorkingDir);
 console.log('Sistema operacional:', os.platform());
 
 if (!GEMINI_API_KEY) {
-  console.warn('Aviso: GEMINI_API_KEY nao definida.');
+  console.warn('⚠️ Aviso: GEMINI_API_KEY não definida.');
 }
 
+// Middleware de autenticação
 function checkAuth(req, res, next) {
   const auth = req.headers['authorization'] || '';
   if (!auth.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
@@ -35,25 +41,20 @@ function checkAuth(req, res, next) {
   next();
 }
 
-// Endpoint: pedir à IA sugestões de comando (não executa)
+// Endpoint: pedir à IA sugestões de comando
 app.post('/suggest', checkAuth, async (req, res) => {
   const { prompt } = req.body || {};
   if (!prompt || typeof prompt !== 'string') return res.status(400).json({ error: 'Prompt inválido' });
 
-  // Monte um system prompt claro: IA deve retornar comandos sugeridos, com explicação breve
   const systemPrompt = `Você é um assistente que sugere comandos de PowerShell/CLI para executar em um ambiente controlado.
 Retorne uma resposta JSON com campo "suggestions": array de objetos { "command": "...", "explanation": "..." }.
 Apenas comandos aprovados serão executados manualmente pelo usuário.`;
 
   try {
-    // Chamada genérica para a API do Gemini (exemplo; adapte conforme o endpoint real)
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || 'gemini-2.0')} :generateContent?key=${GEMINI_API_KEY}`;
-    // Observação: confirme formato de request/response da sua versão da API Gemini e adapte.
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || 'gemini-2.0')}:generateContent?key=${GEMINI_API_KEY}`;
     const body = {
       systemInstruction: { parts: [{ text: systemPrompt }] },
-      // user content
       contents: [{ parts: [{ text: prompt }] }],
-      // opções conforme API (ajuste conforme docs)
       temperature: 0.2,
       maxOutputTokens: 512
     };
@@ -65,11 +66,7 @@ Apenas comandos aprovados serão executados manualmente pelo usuário.`;
     });
 
     const data = await r.json();
-    // Aqui depende de como a API retorna texto. Ajuste conforme sua resposta real.
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data).slice(0,2000);
-
-    // O ideal é que a IA retorne JSON; se não retornar, você pode tentar extrair linhas que pareçam comandos.
-    // Para máxima segurança, retornamos 'raw' e deixamos o cliente mostrar pro usuário.
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data).slice(0, 2000);
     res.json({ ok: true, raw: text });
   } catch (err) {
     console.error('Erro /suggest:', err);
@@ -77,25 +74,26 @@ Apenas comandos aprovados serão executados manualmente pelo usuário.`;
   }
 });
 
+// Endpoint: executar comandos PowerShell
 app.post('/exec', checkAuth, (req, res) => {
   const { command } = req.body || {};
   if (!command || typeof command !== 'string') {
-    return res.status(400).json({ error: 'Comando invalido' });
+    return res.status(400).json({ error: 'Comando inválido' });
   }
 
   const trimmedCmd = command.trim();
 
+  // Comando 'cd'
   if (trimmedCmd.startsWith('cd ')) {
     const newDir = trimmedCmd.substring(3).trim().replace(/['"]/g, '');
     const targetDir = path.isAbsolute(newDir) ? newDir : path.join(currentWorkingDir, newDir);
 
     try {
-      const fs = require('fs');
       if (fs.existsSync(targetDir) && fs.statSync(targetDir).isDirectory()) {
         currentWorkingDir = path.resolve(targetDir);
         return res.json({
           ok: true,
-          stdout: `Diretorio alterado para: ${currentWorkingDir}\n`,
+          stdout: `Diretório alterado para: ${currentWorkingDir}\n`,
           stderr: '',
           cwd: currentWorkingDir
         });
@@ -103,7 +101,7 @@ app.post('/exec', checkAuth, (req, res) => {
         return res.json({
           ok: false,
           stdout: '',
-          stderr: `Diretorio nao encontrado: ${targetDir}\n`,
+          stderr: `Diretório não encontrado: ${targetDir}\n`,
           cwd: currentWorkingDir
         });
       }
@@ -111,12 +109,13 @@ app.post('/exec', checkAuth, (req, res) => {
       return res.json({
         ok: false,
         stdout: '',
-        stderr: `Erro ao mudar diretorio: ${err.message}\n`,
+        stderr: `Erro ao mudar diretório: ${err.message}\n`,
         cwd: currentWorkingDir
       });
     }
   }
 
+  // Comando 'pwd'
   if (trimmedCmd === 'pwd') {
     return res.json({
       ok: true,
@@ -131,7 +130,7 @@ app.post('/exec', checkAuth, (req, res) => {
   const shellArgs = isWindows ? ['-Command', trimmedCmd] : ['-c', trimmedCmd];
 
   console.log(`Executando: ${trimmedCmd}`);
-  console.log(`Diretorio: ${currentWorkingDir}`);
+  console.log(`Diretório: ${currentWorkingDir}`);
 
   const child = spawn(shell, shellArgs, {
     cwd: currentWorkingDir,
@@ -143,16 +142,11 @@ app.post('/exec', checkAuth, (req, res) => {
   let stdout = '';
   let stderr = '';
 
-  child.stdout.on('data', (data) => {
-    stdout += data.toString();
-  });
-
-  child.stderr.on('data', (data) => {
-    stderr += data.toString();
-  });
+  child.stdout.on('data', (data) => { stdout += data.toString(); });
+  child.stderr.on('data', (data) => { stderr += data.toString(); });
 
   child.on('close', (code) => {
-    console.log(`Comando finalizado com codigo: ${code}`);
+    console.log(`Comando finalizado com código: ${code}`);
     res.json({
       ok: code === 0,
       stdout: stdout || '',
@@ -191,8 +185,8 @@ app.get('/health', (req, res) => {
 app.listen(PORT, BIND_ADDR, () => {
   console.log('='.repeat(60));
   console.log('Terminal PowerShell Real - Servidor Online');
-  console.log(`URL: http://${BIND_ADDR}:${PORT}`);
+  console.log(`URL: https://85cf818df1d7.ngrok-free.app -> http://localhost:3001`);
   console.log(`Token: ${SECRET}`);
-  console.log(`Diretorio: ${currentWorkingDir}`);
+  console.log(`Diretório inicial: ${currentWorkingDir}`);
   console.log('='.repeat(60));
 });

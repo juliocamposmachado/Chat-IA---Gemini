@@ -3,7 +3,7 @@
 # Uso: ./terminal_client.sh
 set -euo pipefail
 
-SERVER_URL="http://127.0.0.1:3001"
+SERVER_URL="const SERVER_URL = "https://d7f8-201-6-88-122.ngrok-free.app";"
 TOKEN="${TERMINAL_TOKEN:-troque-por-um-token-muito-forte}"
 REQUIRE_WHITELIST=true  # definir false se quiser permitir qualquer comando (não recomendado)
 
