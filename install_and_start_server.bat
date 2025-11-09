@@ -93,7 +93,7 @@ echo app.use(bodyParser.json({ limit: '200kb' }));
 echo app.use(express.static('.'));
 echo 
 echo // Configuração
-echo const PORT = process.env.PORT || 3000;
+echo const PORT = process.env.PORT || 3001;
 echo const BIND_ADDR = '127.0.0.1';
 echo const SECRET = process.env.TERMINAL_TOKEN || 'terminal-secret-token-2024';
 echo const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -254,7 +254,7 @@ if not exist "index.html" (
     echo ^<!DOCTYPE html^^>^<html^^>^<head^^>^<title^^^>Chat IA Gemini^^</title^^>^</head^^>
     echo ^<body style="font-family: Arial; padding: 20px;"^^>
     echo ^<h1^^^>🚀 Servidor Chat IA Gemini Rodando!^^</h1^^>
-    echo ^<p^^^>O servidor terminal está online em ^<strong^^^>http://127.0.0.1:3000^^</strong^^^>^^</p^^>
+    echo ^<p^^^>O servidor terminal está online em ^<strong^^^>http://127.0.0.1:3001^^</strong^^^>^^</p^^>
     echo ^<p^^^>Para usar a interface completa, abra o arquivo index.html principal.^^</p^^>
     echo ^<p^^^>Terminal disponível em: ^<code^^^>/exec^^</code^^^> (com autenticação)^^</p^^>
     echo ^<p^^^>Health check: ^<a href="/health"^^^>/health^^</a^^^>^^</p^^>
@@ -272,12 +272,12 @@ IF NOT ERRORLEVEL 1 (
     echo ⚠️  A porta %PORT% já está em uso. Tentando usar outra porta...
     set /a NEW_PORT=PORT+1
     echo Editando server.js para usar porta !NEW_PORT!...
-    powershell -Command "(gc '%SERVER_FILE%') -replace 'const PORT = process.env.PORT || 3000;', 'const PORT = process.env.PORT || !NEW_PORT!;' | Out-File -Encoding UTF8 '%SERVER_FILE%'"
+    powershell -Command "(gc '%SERVER_FILE%') -replace 'const PORT = process.env.PORT || 3001;', 'const PORT = process.env.PORT || !NEW_PORT!;' | Out-File -Encoding UTF8 '%SERVER_FILE%'"
 )
 
 :: Inicia o servidor
 echo 🚀 Iniciando servidor Node.js...
-echo 📍 URL: http://127.0.0.1:3000
+echo 📍 URL: http://127.0.0.1:3001
 echo 🔒 Token: terminal-secret-token-2024
 echo.
 echo ⚠️  IMPORTANTE: Mantenha esta janela aberta enquanto usar o chat.
@@ -291,7 +291,7 @@ IF ERRORLEVEL 1 (
     echo.
     echo ❌ ERRO: Falha ao iniciar o servidor.
     echo Possíveis causas:
-    echo - Porta 3000 já está em uso
+    echo - Porta 3001 já está em uso
     echo - Problema nas dependências
     echo - Erro no código do servidor
     echo.
