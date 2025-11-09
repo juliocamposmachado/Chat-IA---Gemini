@@ -549,7 +549,15 @@
     <button id="close-terminal" class="close-terminal-btn">✕</button>
   </div>
 
-   <!-- iframe com o site do terminal -->
+
+
+      <div id="terminal-output"></div>
+      <div class="terminal-input-area">
+        <input id="terminal-input" placeholder='Digite: git status, cd C:\projetos, dir, ls, pwd...' />
+        <button id="terminal-send">Executar</button>
+      </div>
+    </div>
+       <!-- iframe com o site do terminal -->
   <iframe 
     src="https://web-terminal-simulat-f2rh.bolt.host/" 
     width="100%" 
@@ -559,12 +567,8 @@
   </iframe>
 </div>
 
-      <div id="terminal-output"></div>
-      <div class="terminal-input-area">
-        <input id="terminal-input" placeholder='Digite: git status, cd C:\projetos, dir, ls, pwd...' />
-        <button id="terminal-send">Executar</button>
-      </div>
-    </div>
+
+
   </div>
 
   <div id="config-modal">
